@@ -23,6 +23,27 @@ public class PhoneNumber {
         System.out.println(options);
     }
 
+    public PhoneNumber(String number) {
+        long num = 0;
+        for (char c : number.toCharArray()) {
+            if (Character.isDigit(c)) {
+                num = num * 10 + (c - '0');
+            }
+        }
+        this.number = num;
+        ArrayList<String> blank = new ArrayList<String>();
+        this.options = getOptions(blank, getOptions2DArray(), 0);
+        for (char[] arr : getOptions2DArray()) {
+            System.out.print("[");
+            for (char c : arr) {
+                System.out.print(c + ",");
+            }
+            System.out.println("]");
+        }
+        System.out.println("Options: ");
+        System.out.println(options);
+    }
+
     public long getNumber() {
         return number;
     }
