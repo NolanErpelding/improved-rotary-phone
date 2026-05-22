@@ -7,7 +7,7 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
         System.out.println("Enter a phone number: ");
-        int number = input.nextInt();
+        long number = input.nextLong();
         input.close();
     }
 }
