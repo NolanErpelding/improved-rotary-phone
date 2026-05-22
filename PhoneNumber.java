@@ -1,20 +1,34 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class PhoneNumber {
     private long number;
-    private String[] options;
+    private ArrayList<String> options;
 
     public PhoneNumber() {
     }
 
     public PhoneNumber(long number) {
         this.number = number;
-        System.out.println(getOptions2DArray());
+        ArrayList<String> blank = new ArrayList<String>();
+        this.options = getOptions(blank, getOptions2DArray(), 0);
+
+        for (char[] arr : getOptions2DArray()) {
+            System.out.print("[");
+            for (char c : arr) {
+                System.out.print(c + ",");
+            }
+            System.out.println("]");
+        }
+        System.out.println("Options: ");
+        System.out.println(options);
     }
 
     public long getNumber() {
         return number;
+    }
+
+    public ArrayList<String> getOptions() {
+        return options;
     }
 
     public void setNumber(long number) {
@@ -49,11 +63,22 @@ public class PhoneNumber {
         return TwodOptions;
     }
     
-    public ArrayList<String> getOptions(int start) {
-        //loops through every posibility of options and adds them to an arraylist
-        if (start == 0) {
-            ArrayList<String> options = new ArrayList<String>();
+    public ArrayList<String> getOptions(ArrayList<String> options, char[][] TwodOptions, int start) {
+        if (start >= TwodOptions.length) {
+            return options;
         }
-        return 
+        if (start == 0) {
+            for (char c : TwodOptions[0]) {
+                options.add("" + c);
+            }
+        } else {
+            for (int i = options.size() - 1; i >= 0; i--) {
+                String option = options.remove(i);
+                for (char c : TwodOptions[start]) {
+                    options.add(option + c);
+                }
+            }
+        }
+        return getOptions(options, TwodOptions, start + 1);
     }
 }
