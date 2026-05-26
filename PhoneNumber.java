@@ -102,4 +102,23 @@ public class PhoneNumber {
         }
         return getOptions(options, TwodOptions, start + 1);
     }
+
+    public void siftOptions() {
+        for (int i = options.size() - 1; i >= 0; i--) {
+            String option = options.get(i);
+            if (!Words.isWord(option)) {
+                options.remove(i);
+            }
+        }
+    }
+
+    public ArrayList<Integer> vedant(String largeString, String smallString) {
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (int i = 0, j = smallString.length(); j <= largeString.length(); i++, j++) {
+            if (largeString.substring(i, j).equals(smallString)) {
+                indices.add(i);
+            }
+        }
+        return indices;
+    }
 }

@@ -1,18 +1,22 @@
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
-public class Words { 
-    public static void main(String[] args) {
+public class Words {
+    
+    private ArrayList<String> words;
+    private ArrayList<Double> sentiment;
+
+    public void Words() {
         File sentimentValues = new File("SentimentValues.txt");
 
-        // The try-with-resources block automatically handles closing the reader
         try (Scanner reader = new Scanner(sentimentValues)) {
             
             while (reader.hasNextLine()) {
                 String data = reader.nextLine();
-                // You can now use the 'data' variable here
-                System.out.println(data); 
+                words.add(data.substring(0, data.indexOf(",")));
+                sentiment.add(Double.parseDouble(data.substring(data.indexOf(",") + 1)));
             }
             
         } catch (FileNotFoundException e) {
@@ -21,13 +25,14 @@ public class Words {
         }
     }
     
-    /* File sentimentValues = new File("SentimentValues.txt");
-     Scanner reader = new Scanner(sentimentValues);
+    public ArrayList<String> getWords() {
+        return words;
+    }
 
-     while(reader.hasNextLine()){
-        String data = reader.nextLine();
-     }
-
-     reader.close(); */
-
+    public ArrayList<Double> getSentiment() {
+        return sentiment;
+    }
+    public boolean isWord(String word) {
+        return words.contains(word);
+    }
 }
