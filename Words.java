@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class Words {
     
-    private static ArrayList<String> words;
-    private static ArrayList<Double> sentiment;
+    private ArrayList<String> words;
+    private ArrayList<Double> sentiment;
 
     public void Words() {
         File sentimentValues = new File("SentimentValues.txt");
@@ -32,7 +32,7 @@ public class Words {
     public ArrayList<Double> getSentiment() {
         return sentiment;
     }
-    public static boolean isWord(String word) {
+    public boolean isWord(String word) {
         return words.contains(word);
     }
 }
