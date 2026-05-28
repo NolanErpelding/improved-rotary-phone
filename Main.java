@@ -8,6 +8,7 @@ public class Main {
         String number = input.nextLine();
         //System.out.print(Words.getWords());
         //System.out.println(Words.getWords().size());
+        System.out.println("/n/n");
         PhoneNumber phone = new PhoneNumber(number);
         input.close();
     }

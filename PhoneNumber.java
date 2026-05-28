@@ -1,3 +1,4 @@
+import java.lang.foreign.Linker.Option;
 import java.util.ArrayList;
 
 public class PhoneNumber {
@@ -26,10 +27,13 @@ public class PhoneNumber {
         ArrayList<String> blank = new ArrayList<String>();
         this.options = getOptions(blank, getOptions2DArray(), 0);
 
-        System.out.println("Options before sifting: " + options.size());
+        //System.out.println("Options before sifting: " + options.size());
         this.siftOptions();
-        System.out.println("Options after sifting: " + options.size());
+        //System.out.println("Options after sifting: " + options.size());
+        this.getRidOfMeaninglessLetters();
+        //System.out.println("Options after getting rid of meaningless letters: " + options.size());
 
+        /* 
         for (char[] arr : getOptions2DArray()) {
             System.out.print("[");
             for (char c : arr) {
@@ -37,6 +41,7 @@ public class PhoneNumber {
             }
             System.out.println("]");
         }
+        */
         System.out.println("Options: ");
         System.out.println(options);
     }
@@ -53,7 +58,7 @@ public class PhoneNumber {
         this.number = number;
     }
 
-    public char[][] getOptions2DArray() {
+    private char[][] getOptions2DArray() {
         String stringNum = "" + number;
         char[][] TwodOptions = new char[stringNum.length()][];
         for (int i = 0; i < stringNum.length(); i++) {
@@ -81,7 +86,7 @@ public class PhoneNumber {
         return TwodOptions;
     }
     
-    public ArrayList<String> getOptions(ArrayList<String> options, char[][] TwodOptions, int start) {
+    private ArrayList<String> getOptions(ArrayList<String> options, char[][] TwodOptions, int start) {
         if (start >= TwodOptions.length) {
             return options;
         }
@@ -100,7 +105,7 @@ public class PhoneNumber {
         return getOptions(options, TwodOptions, start + 1);
     }
 
-    public void siftOptions() {
+    private void siftOptions() {
         for (int i = options.size() - 1; i >= 0; i--) {
             String option = options.get(i);
             if (!Words.containsWord(option)) {
@@ -109,13 +114,25 @@ public class PhoneNumber {
         }
     }
 
-    public ArrayList<Integer> vedant(String largeString, String smallString) {
-        ArrayList<Integer> indices = new ArrayList<>();
-        for (int i = 0, j = smallString.length(); j <= largeString.length(); i++, j++) {
-            if (largeString.substring(i, j).equals(smallString)) {
-                indices.add(i);
+    private void getRidOfMeaninglessLetters() {
+            for (int i = options.size() - 1; i >= 0; i--) {
+            String oldOption = options.get(i);
+            String newOption = "";
+            String word = Words.buriedWord(options.get(i));
+            int start = oldOption.indexOf(word);
+            int end = start + word.length();
+            for (int c = 0; c < options.get(i).toCharArray().length; c++) {
+                if (c >= start && c < end) {
+                    newOption += oldOption.charAt(c);
+                } else {
+                    newOption += ((Long) number).toString().charAt(c);
+                }
+            }
+            if (options.contains(newOption)) {
+                options.remove(i);
+            } else {
+                options.set(i, newOption);
             }
         }
-        return indices;
     }
 }

@@ -48,7 +48,19 @@ public class Words {
             if (word.indexOf(w) != -1) {
                 return true;
             }
-        }
+        }   
         return false;
+    }
+
+    public static String buriedWord(String word) {
+        String longest = "";
+        for (String w : words) {
+            if (word.indexOf(w) != -1) {
+                if (w.length() > longest.length()) {
+                    longest = w;
+                }
+            }
+        }
+        return longest;
     }
 }

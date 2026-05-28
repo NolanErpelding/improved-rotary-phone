@@ -2994,6 +2994,7 @@ jumped,-0.1
 jumping,-0.19
 june,0.75
 junior,-0.17
+junk,-0.45
 jury,-0.64
 justice,0.03
 juvenile,-0.65
