@@ -19,7 +19,7 @@ public class Words {
             while (reader.hasNextLine()) {
                 String data = reader.nextLine();
                 String word = data.substring(0, data.indexOf(","));
-                if (word.length() > 2 && word.length() <= 10) {
+                if (word.length() > 1 && word.length() <= 10) {
                     words.add(word);
                     sentiment.add(Double.parseDouble(data.substring(data.indexOf(",") + 1)));
                 }
