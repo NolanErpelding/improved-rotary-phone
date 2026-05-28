@@ -12,12 +12,12 @@ public class Main {
             PhoneNumber phone = new PhoneNumber(number);
         } else {
             System.out.println("\nError: No input detected from the console environment!");
-        }
-        /* String number = input.nextLine();
-        System.out.print(Words.getWords());
-        System.out.println(Words.getWords().size());
-        System.out.println("\n\n");
-        PhoneNumber phone = new PhoneNumber(number); */
+        } 
+        //String number = input.nextLine();
+        //System.out.print(Words.getWords());
+        //System.out.println(Words.getWords().size());
+        //System.out.println("\n\n");
+        //PhoneNumber phone = new PhoneNumber(number); 
         input.close();
     }
 }
