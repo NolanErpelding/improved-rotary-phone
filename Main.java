@@ -6,18 +6,18 @@ public class Main {
         Scanner input = new Scanner(System.in);
         System.out.println("");
         System.out.print("Enter a phone number: ");
-        if (input.hasNextLine()) {
+        /* if (input.hasNextLine()) {
             String number = input.nextLine();
             System.out.println("\n\n");
             PhoneNumber phone = new PhoneNumber(number);
         } else {
             System.out.println("\nError: No input detected from the console environment!");
-        } 
-        //String number = input.nextLine();
+        } */
+        String number = input.nextLine();
         //System.out.print(Words.getWords());
         //System.out.println(Words.getWords().size());
-        //System.out.println("\n\n");
-        //PhoneNumber phone = new PhoneNumber(number); 
+        System.out.println("\n\n");
+        PhoneNumber phone = new PhoneNumber(number); 
         input.close();
     }
 }
