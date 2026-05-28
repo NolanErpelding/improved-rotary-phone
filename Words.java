@@ -18,8 +18,11 @@ public class Words {
 
             while (reader.hasNextLine()) {
                 String data = reader.nextLine();
-                words.add(data.substring(0, data.indexOf(",")));
-                sentiment.add(Double.parseDouble(data.substring(data.indexOf(",") + 1)));
+                String word = data.substring(0, data.indexOf(","));
+                if (word.length() > 2 && word.length() <= 10) {
+                    words.add(word);
+                    sentiment.add(Double.parseDouble(data.substring(data.indexOf(",") + 1)));
+                }
             }
 
         } catch (FileNotFoundException e) {
@@ -35,7 +38,17 @@ public class Words {
     public static ArrayList<Double> getSentiment() {
         return sentiment;
     }
+
     public static boolean isWord(String word) {
         return words.contains(word);
+    }
+
+    public static boolean containsWord(String word) {
+        for (String w : words) {
+            if (word.indexOf(w) != -1) {
+                return true;
+            }
+        }
+        return false;
     }
 }

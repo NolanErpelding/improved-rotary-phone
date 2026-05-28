@@ -8,19 +8,7 @@ public class PhoneNumber {
     }
 
     public PhoneNumber(long number) {
-        this.number = number;
-        ArrayList<String> blank = new ArrayList<String>();
-        this.options = getOptions(blank, getOptions2DArray(), 0);
-
-        for (char[] arr : getOptions2DArray()) {
-            System.out.print("[");
-            for (char c : arr) {
-                System.out.print(c + ",");
-            }
-            System.out.println("]");
-        }
-        System.out.println("Options: ");
-        System.out.println(options);
+        initialize(number);
     }
 
     public PhoneNumber(String number) {
@@ -30,9 +18,18 @@ public class PhoneNumber {
                 num = num * 10 + (c - '0');
             }
         }
-        this.number = num;
+        initialize(num);
+    }
+
+    private void initialize(long number) {
+        this.number = number;
         ArrayList<String> blank = new ArrayList<String>();
         this.options = getOptions(blank, getOptions2DArray(), 0);
+
+        System.out.println("Options before sifting: " + options.size());
+        this.siftOptions();
+        System.out.println("Options after sifting: " + options.size());
+
         for (char[] arr : getOptions2DArray()) {
             System.out.print("[");
             for (char c : arr) {
@@ -106,7 +103,7 @@ public class PhoneNumber {
     public void siftOptions() {
         for (int i = options.size() - 1; i >= 0; i--) {
             String option = options.get(i);
-            if (!Words.isWord(option)) {
+            if (!Words.containsWord(option)) {
                 options.remove(i);
             }
         }
