@@ -4,25 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phone Word Finder</title>
     <style>
-        :root {
-            --bg-dark: hsl(205 100% 90%);
-            --bg: hsl(205 100% 95%);
-            --bg-light: hsl(205 100% 100%);
-            --text: hsl(226 100% 9%);
-            --text-muted: hsl(200 100% 18%);
-            --highlight: hsl(205 100% 99%);
-            --border: hsl(201 77% 44%);
-            --border-muted: hsl(203 77% 59%);
-            --primary: hsl(200 100% 18%);
-            --secondary: hsl(32 100% 17%);
-            --danger: hsl(7 51% 41%);
-            --warning: hsl(53 100% 15%);
-            --success: hsl(161 100% 17%);
-            --info: hsl(217 54% 44%);
-            --shadow: 0px 2px 2px oklch(0 0 0 / 0.2), 0px 4px 4px oklch(0 0 0 / 0.1);
-        }
-
         *,
         *::before,
         *::after {
@@ -33,42 +16,36 @@
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
+            background: #f5f4f0;
+            color: #1a1a18;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             padding: 2rem 1rem;
-
         }
 
-        .main-content {
+        .app {
             width: 100%;
-            max-width: 720px
+            max-width: 720px;
         }
 
-        .text-card {
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            background-color: var(--bg);
-
-
-            background-image: radial-gradient(circle 300px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.90), transparent);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
         }
 
-        .text-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        .subtitle {
+            font-size: 0.875rem;
+            color: #888780;
+            margin-bottom: 1.5rem;
         }
 
         .input-row {
-            background-color: var(--bg-dark);
-            padding: 10px;
-            margin: 20px 0;
-            border-radius: 8px;
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1.25rem;
         }
 
         .phone-input {
@@ -78,16 +55,12 @@
             letter-spacing: 0.1em;
             padding: 0 16px;
             height: 54px;
-            border: 1px solid var(--border-muted);
+            border: 1px solid #d3d1c7;
             border-radius: 10px;
-            background: var(--bg-light);
-            color: var(--text);
+            background: #fff;
+            color: #1a1a18;
             outline: none;
             transition: border-color 0.15s;
-        }
-
-        .phone-input::placeholder {
-            color: var(--border-muted);
         }
 
         .phone-input:focus {
@@ -103,14 +76,14 @@
             cursor: pointer;
             border-radius: 10px;
             border: 1px solid #d3d1c7;
-            background: var(--text);
+            background: #1a1a18;
             color: #f5f4f0;
             transition: background 0.15s, transform 0.1s;
             white-space: nowrap;
         }
 
         .find-btn:hover {
-            background: var(--text-muted);
+            background: #333;
         }
 
         .find-btn:active {
@@ -122,23 +95,29 @@
             cursor: not-allowed;
         }
 
-        .results-grid {
+        .status {
+            font-size: 0.8125rem;
+            color: #888780;
+            margin-bottom: 1rem;
+            min-height: 18px;
+        }
+
+        .resultContainer {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 8px;
         }
 
         .result-card {
+            background: #fff;
+            border: 1px solid var(--border-muted);
             border-radius: 10px;
-            padding: 15px;
-            box-shadow: var(--shadow);
-            background-color: var(--bg);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 10px 14px;
+            transition: border-color 0.15s;
         }
 
         .result-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            border-color: #b4b2a9;
         }
 
         .result-display {
@@ -169,6 +148,21 @@
             display: inline-block;
         }
 
+        .sent-pos {
+            background: #eaf3de;
+            color: #3b6d11;
+        }
+
+        .sent-neg {
+            background: #fcebeb;
+            color: #a32d2d;
+        }
+
+        .sent-neu {
+            background: #f1efe8;
+            color: #5f5e5a;
+        }
+
         .empty {
             font-size: 0.875rem;
             color: #888780;
@@ -183,63 +177,21 @@
             padding-top: 1rem;
             border-top: 1px solid #d3d1c7;
         }
-
-
-        h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            margin-top: 0;
-            margin-bottom: 0.25rem;
-            color: var(--text);
-        }
-
-        .subtitle {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
-
-        p {
-            margin: 0 0 10px;
-            color: var(--text-muted);
-        }
     </style>
-    <title>Phonewords</title>
 </head>
 
 <body>
-    <div class="main-content">
-        <h1>Phonewords</h1>
-        <p class="subtitle">Turning phone numbers into words</p>
-
-        <div class="text-card">
-            <p>Welcome to the Phonewords program! Did you know phone words generate two times as many calls as
-                regular
-                phone
-                numbers? This program is
-                designed to help you find all the possible word combinations that can be formed from a given phone
-                number.
-                This can help you decide
-                what phone number to get for your business, help you memorize phone numbers, or just have fun seeing
-                what
-                words you can create from
-                your friend's phone number!
-            </p>
-            <p>To use the program, simply enter a phone number when prompted. The program will then generate and
-                display
-                all
-                valid word combinations that can be formed from the digits in the phone number.</p>
-        </div>
+    <div class="app">
+        <h1>Phone Word Finder</h1>
+        <p class="subtitle">Enter a phone number to discover words hidden in its digits.</p>
         <div class="input-row">
-            <input class="phone-input" type="tel" id="phoneInput" placeholder="800-465-4329" maxlength="20" />
+            <input class="phone-input" type="tel" id="phoneInput" placeholder="800-555-1234" maxlength="20" />
             <button class="find-btn" id="findBtn" onclick="findWords()">Find words</button>
         </div>
-
-        <div class="status" id="status"></div>
-        <div id="resultsContainer"></div>
+        <!-- <div class="status" id="status"></div> -->
+        <div class="resultContainer" id="resultsContainer"></div>
+        <p class="note">Words shown in blue form a real word; surrounding characters stay as digits.</p>
     </div>
-
 
     <script>
         const KEY_MAP = {
@@ -267,13 +219,13 @@
                     const word = line.substring(0, comma).trim().toLowerCase();
                     const val = parseFloat(line.substring(comma + 1));
                     if (word.length >= 2 && word.length <= 10 && /^[a-z]+$/.test(word) && !isNaN(val)) {
-                        wordMap[word] = true;
+                        wordMap[word] = val;
                     }
                 }
-                console.log('Loaded ' + Object.keys(wordMap).length.toLocaleString() + ' words.');
+                document.getElementById('status').textContent = 'Loaded ' + Object.keys(wordMap).length.toLocaleString() + ' words.';
                 setTimeout(() => { document.getElementById('status').textContent = ''; }, 2000);
             } catch (e) {
-                console.error('Error loading SentimentValues.txt:', e);
+                document.getElementById('status').textContent = 'Error: could not load SentimentValues.txt — make sure it is in the same folder.';
             }
             btn.disabled = false;
             btn.textContent = 'Find words';
@@ -314,24 +266,23 @@
                 const start = opt.indexOf(word), end = start + word.length;
                 let display = '';
                 for (let i = 0; i < opt.length; i++) display += (i >= start && i < end) ? opt[i] : digits[i];
-                if (!seen.has(display)) { seen.add(display); results.push({ display, word }); }
+                if (!seen.has(display)) { seen.add(display); results.push({ display, word, sentiment: wordMap[word] || 0 }); }
             }
             return results;
         }
 
         function renderResults(results) {
             const container = document.getElementById('resultsContainer');
-            if (!results.length) {
-                console.log('No phone words found for this number.');
-                return;
-            }
+            if (!results.length) { container.innerHTML = '<div class="empty">No phone words found for this number.</div>'; return; }
             const grid = document.createElement('div');
             grid.className = 'results-grid';
             for (const r of results) {
                 const card = document.createElement('div');
                 card.className = 'result-card';
                 const displayHTML = r.display.split('').map(ch => /[a-z]/i.test(ch) ? '<span class="word-part">' + ch.toUpperCase() + '</span>' : ch).join('');
-                card.innerHTML = '<div class="result-display">' + displayHTML + '</div><div class="result-word">' + r.word + '</div>';
+                let sentClass = r.sentiment > 0.3 ? 'sent-pos' : r.sentiment < -0.3 ? 'sent-neg' : 'sent-neu';
+                const sentLabel = (r.sentiment >= 0 ? '+' : '') + r.sentiment.toFixed(2);
+                card.innerHTML = '<div class="result-display">' + displayHTML + '</div><div class="result-word">' + r.word + '</div><span class="result-sentiment ' + sentClass + '">' + sentLabel + '</span>';
                 grid.appendChild(card);
             }
             container.innerHTML = '';
@@ -341,10 +292,7 @@
         async function findWords() {
             const raw = document.getElementById('phoneInput').value;
             const digits = raw.replace(/\D/g, '').split('');
-            if (!digits.length) {
-                console.log('Enter a phone number first.');
-                return;
-            }
+            if (!digits.length) { document.getElementById('status').textContent = 'Enter a phone number first.'; return; }
             document.getElementById('status').textContent = 'Generating combinations…';
             document.getElementById('resultsContainer').innerHTML = '';
             document.getElementById('findBtn').disabled = true;
@@ -360,35 +308,7 @@
             document.getElementById('findBtn').disabled = false;
         }
 
-        document.getElementById('phoneInput').addEventListener('keydown', e => {
-            if (e.key === 'Enter') findWords();
-        });
-
-        const box = document.querySelector('.text-card');
-
-        window.addEventListener('mousemove', (e) => {
-            const rect = box.getBoundingClientRect();
-
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const boxCenterX = rect.width / 2;
-            const boxCenterY = rect.height / 2;
-
-            const distanceX = e.clientX - (rect.left + boxCenterX);
-            const distanceY = e.clientY - (rect.top + boxCenterY);
-            const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-
-            const maxDistance = 600;
-
-            let opacity = 1 - (distance / maxDistance);
-            opacity = Math.max(0, Math.min(1, opacity));
-
-            box.style.setProperty('--mouse-x', `${x}px`);
-            box.style.setProperty('--mouse-y', `${y}px`);
-            box.style.setProperty('--mouse-opacity', opacity);
-        });
-
+        document.getElementById('phoneInput').addEventListener('keydown', e => { if (e.key === 'Enter') findWords(); });
     </script>
 </body>
 
