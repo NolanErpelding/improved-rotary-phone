@@ -248,83 +248,56 @@
 
 
     <script>
+        const wordWorker = new Worker('phoneWorder.js');
+        let lastNumber = '';
 
-        let lastNumber = ""
-        const KEY_MAP = {
-            '0': [' '], '1': [' '],
-            '2': ['a', 'b', 'c'], '3': ['d', 'e', 'f'],
-            '4': ['g', 'h', 'i'], '5': ['j', 'k', 'l'],
-            '6': ['m', 'n', 'o'], '7': ['p', 'q', 'r', 's'],
-            '8': ['t', 'u', 'v'], '9': ['w', 'x', 'y', 'z']
+        wordWorker.onmessage = function (e) {
+            const {
+                type, results, optionsLength, count, error
+            } = e.data;
+
+            if (type === 'loaded') {
+                const btn = document.getElementById('findBtn');
+                btn.disabled = false;
+                btn.textContent = 'Find words';
+                console.log('Loaded ' + count.toLocaleString() + ' words in background.');
+                return;
+            }
+
+            if (type === 'error') {
+                console.error('Worker error:', error);
+                document.getElementById('findBtn').disabled = false;
+                return;
+            }
+
+            if (type === 'results') {
+                document.getElementById('status').textContent = results.length
+                    ? 'Found ' + results.length + ' phone word'
+                    : 'Checked ' + optionsLength.toLocaleString() + ' combinations — no words found.';
+
+                renderResults(results);
+                document.getElementById('findBtn').disabled = false;
+            }
         };
 
-
-        const wordMap = {};
-
-        async function loadWords() {
-            const btn = document.getElementById('findBtn');
-            btn.disabled = true;
-            btn.textContent = 'Loading…';
-            try {
-                const resp = await fetch('SentimentValues.txt');
-                if (!resp.ok) throw new Error('File not found');
-                const text = await resp.text();
-                for (const line of text.split('\n')) {
-                    const comma = line.lastIndexOf(',');
-                    if (comma < 0) continue;
-                    const word = line.substring(0, comma).trim().toLowerCase();
-                    const val = parseFloat(line.substring(comma + 1));
-                    if (word.length >= 2 && word.length <= 10 && /^[a-z]+$/.test(word) && !isNaN(val)) {
-                        wordMap[word] = true;
-                    }
-                }
-                console.log('Loaded ' + Object.keys(wordMap).length.toLocaleString() + ' words.');
-                setTimeout(() => { document.getElementById('status').textContent = ''; }, 2000);
-            } catch (e) {
-                console.error('Error loading SentimentValues.txt:', e);
+        async function findWords() {
+            const raw = document.getElementById('phoneInput').value;
+            const digits = raw.replace(/\D/g, '').split('');
+            if (!digits.length) {
+                console.log('Enter a phone number first.');
+                return;
             }
-            btn.disabled = false;
-            btn.textContent = 'Find words';
-        }
-
-        loadWords();
-
-        function containsWord(combo) {
-            for (const w in wordMap) { if (combo.includes(w)) return true; }
-            return false;
-        }
-
-        function buriedWord(combo) {
-            let longest = '';
-            for (const w in wordMap) {
-                if (combo.includes(w) && w.length > longest.length) longest = w;
+            if (digits.join('') === lastNumber) {
+                console.log('Already checked this number.');
+                return;
             }
-            return longest;
-        }
+            lastNumber = digits.join('');
 
-        function getOptions(digits) {
-            let options = [''];
-            for (const d of digits) {
-                const letters = KEY_MAP[d] || [' '];
-                const next = [];
-                for (const opt of options) for (const ch of letters) next.push(opt + ch);
-                options = next;
-                if (options.length > 500000) break;
-            }
-            return options;
-        }
+            document.getElementById('status').textContent = 'Generating combinations…';
+            document.getElementById('resultsContainer').innerHTML = '';
+            document.getElementById('findBtn').disabled = true;
 
-        function buildResults(digits, rawOptions) {
-            const filtered = rawOptions.filter(o => containsWord(o));
-            const results = [], seen = new Set();
-            for (const opt of filtered) {
-                const word = buriedWord(opt);
-                const start = opt.indexOf(word), end = start + word.length;
-                let display = '';
-                for (let i = 0; i < opt.length; i++) display += (i >= start && i < end) ? opt[i] : digits[i];
-                if (!seen.has(display)) { seen.add(display); results.push({ display, word }); }
-            }
-            return results;
+            wordWorker.postMessage({ type: 'calculate', digits: digits });
         }
 
         function renderResults(results) {
@@ -346,32 +319,6 @@
             container.appendChild(grid);
         }
 
-        async function findWords() {
-            const raw = document.getElementById('phoneInput').value;
-            const digits = raw.replace(/\D/g, '').split('');
-            if (!digits.length) {
-                console.log('Enter a phone number first.');
-                return;
-            }
-            if (digits.join('') === lastNumber) {
-                console.log('Already checked this number.');
-                return;
-            }
-            lastNumber = digits.join('');
-            document.getElementById('status').textContent = 'Generating combinations…';
-            document.getElementById('resultsContainer').innerHTML = '';
-            document.getElementById('findBtn').disabled = true;
-            await new Promise(r => setTimeout(r, 10));
-            const options = getOptions(digits);
-            document.getElementById('status').textContent = 'Checking ' + options.length.toLocaleString() + ' combinations…';
-            await new Promise(r => setTimeout(r, 10));
-            const results = buildResults(digits, options);
-            document.getElementById('status').textContent = results.length
-                ? 'Found ' + results.length + ' phone word' + (results.length !== 1 ? 's' : '') + ' — letters in blue form a real word.'
-                : 'Checked ' + options.length.toLocaleString() + ' combinations — no words found.';
-            renderResults(results);
-            document.getElementById('findBtn').disabled = false;
-        }
 
         document.getElementById('phoneInput').addEventListener('keydown', e => {
             if (e.key === 'Enter') findWords();
