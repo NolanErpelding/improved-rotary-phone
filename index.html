@@ -122,6 +122,12 @@
             cursor: not-allowed;
         }
 
+        .status {
+            font-size: 0.875rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
         .results-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -242,6 +248,8 @@
 
 
     <script>
+
+        let lastNumber = ""
         const KEY_MAP = {
             '0': [' '], '1': [' '],
             '2': ['a', 'b', 'c'], '3': ['d', 'e', 'f'],
@@ -345,6 +353,11 @@
                 console.log('Enter a phone number first.');
                 return;
             }
+            if (digits.join('') === lastNumber) {
+                console.log('Already checked this number.');
+                return;
+            }
+            lastNumber = digits.join('');
             document.getElementById('status').textContent = 'Generating combinations…';
             document.getElementById('resultsContainer').innerHTML = '';
             document.getElementById('findBtn').disabled = true;
